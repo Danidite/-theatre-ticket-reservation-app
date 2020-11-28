@@ -32,6 +32,34 @@ public class SeatList {
 		}
 	}
 	
+	/**
+	 * Return if you can occupy the seat specified
+	 * @param row
+	 * @param col
+	 * @param isEarly
+	 * @return
+	 */
+	boolean canOccupySeat(int row, int col, boolean isEarly) {
+		// Check if there is even any available seats
+		if (seatUsed >= seatMax) {
+			return false;
+		}
+		
+		if (isEarly == true) {
+			// Check if there is even slots for early registration
+			if (earlySeatUsed >= earlySeatMax) {
+				return false;
+			}
+		}
+		
+		// Try to occupy seat, if seat is already occupied, return false
+		if (seatList[row][col].isTaken() == false) {
+			return true;
+		} else {
+			return false;
+		}		
+	}
+	
 	
 	/**
 	 * Occupy a seat, return true if it worked

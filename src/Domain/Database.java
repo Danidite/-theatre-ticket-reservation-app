@@ -121,12 +121,8 @@ public class Database {
 		
 		boolean earlyBooking = false;
 		
-		LocalDate today = LocalDate.now();
-		LocalDate announcementDate = LocalDate.of(announcementYear, announcementMonth, announcementDay);
-		
-		
 		// If announces in the future
-		if (ChronoUnit.DAYS.between(today, announcementDate) > 0) {
+		if (isEarly(LocalDate.of(announcementYear, announcementMonth, announcementDay))) {
 			earlyBooking = true;
 		}
 		
@@ -137,6 +133,22 @@ public class Database {
 		registerList.add(newRegister);
 		
 		return true;
+	}
+	
+	/**
+	 * See if early, the days between today and new days are greater than 0
+	 * @param newDate
+	 * @return
+	 */
+	public boolean isEarly(LocalDate newDate) {
+		LocalDate today = LocalDate.now();
+
+		// If announces in the future
+		if (ChronoUnit.DAYS.between(today, newDate) > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	/**
@@ -238,35 +250,99 @@ public class Database {
 	}
 	
 	/**
-	 * Add a new reservation and also return the reservation (Also occupy the seat)
+	 * Add a new reservation and also return the reservationID (Also occupy the seat)
 	 * @param registerID
 	 * @param seatRow
 	 * @param seatColumn
-	 * @param user
+	 * @param userID
+	 * @param voucherID
 	 * @param paymentInfo
-	 * @param isEarly
 	 * @return
 	 */
-	public Reservation addReservation(String registerID, int seatRow, int seatColumn, RegisteredUser user, Payment paymentInfo, boolean isEarly) {
+	public String addReservation(String registerID, int seatRow, int seatColumn, String userID, String voucherID, Payment paymentInfo) {
+		RegisteredUser user = null;
+		if (userID != null) {
+			user = (RegisteredUser) getUserByID(userID);
+		}
+		
+		// Check if we even have any payment info
+		if (paymentInfo == null) {
+			if (user == null) {
+				return null;
+			}
+			paymentInfo = user.getPaymentInfo();
+		}
+		
+		// Get register
 		Register currentRegister = getRegisterByID(registerID);
 		
-		String userID = null;
-		if (user != null) {
-			userID = user.getUserID();
+		if (currentRegister == null) {
+			return null;
+		}
+		
+		// See if it is early reservation
+		boolean isEarly = isEarly(currentRegister.getAnnouncementDate());
+		
+		// Check if the current seat can be occupied
+		if (currentRegister.canOccupySeat(seatRow, seatColumn, isEarly) == false) {
+			return null;
+		}
+		
+		// Only registered user are allowed to do early reservation, if not registered, fail to early register
+		if (isEarly == true && user == null) {
+			return null;
+		}
+		
+//		String userID = null;
+//		if (user != null) {
+//			userID = user.getUserID();
+//		}
+		
+		// Get the price of register
+		double price = currentRegister.getPrice();
+		
+		Voucher currentVoucher = getVoucherByID(voucherID);
+		
+		// Use voucher credits
+		if (currentVoucher != null) {
+			double voucherCredit = currentVoucher.getCredit();
+			
+			double remainingCredit = 0;
+			
+			if (voucherCredit > price) {
+				remainingCredit = voucherCredit - price;
+			}
+			
+			price -= voucherCredit;
+			
+			
+			if (price < 0) {
+				price = 0;
+			}
+			
+			// Check if voucher could be removed
+			if (remainingCredit == 0) {
+				removeVoucherByID(voucherID);
+			} else {
+				currentVoucher.setCredit(remainingCredit);
+			}
 		}
 		
 		// Create reservation
-		Reservation reservation = new Reservation(seatRow, seatColumn, currentRegister, currentRegister.getPrice(), userID, paymentInfo);
+		Reservation reservation = new Reservation(seatRow, seatColumn, currentRegister, price, userID, paymentInfo);
 		
 		// Occupy Seat
-		currentRegister.occupySeat(seatRow, seatColumn, isEarly);
+		if (currentRegister.occupySeat(seatRow, seatColumn, isEarly) == false) {
+			System.err.println("Error occupying seat!, fix it!");
+			System.exit(1);
+		}
 		
 		// Add to user
 		if (user != null) {
 			user.addReservation(reservation);
 		}
 		
-		return reservation;
+		return reservation.getReservationID();
 	}
 	
 	/**
@@ -365,14 +441,14 @@ public class Database {
 	/**
 	 * Create voucher and return that voucher
 	 * @param amount
-	 * @param user
+	 * @param currentUser
 	 * @return
 	 */
-	public Voucher addVoucher(double amount, RegisteredUser user) {
+	public Voucher addVoucher(double amount, RegisteredUser currentUser) {
 		Voucher newVoucher;
-		if (user != null) {
-			newVoucher = new Voucher(amount, user.getUserID());
-			user.addVoucher(newVoucher);
+		if (currentUser != null) {
+			newVoucher = new Voucher(amount, currentUser.getUserID());
+			currentUser.addVoucher(newVoucher);
 		} else {
 			newVoucher = new Voucher(amount, null);
 		}
@@ -406,6 +482,20 @@ public class Database {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Get seat list by registerID, return null if register cannot be found
+	 * @param registerID
+	 * @return
+	 */
+	public char[][] getSeatListByRegisterID(String registerID) {
+		Register register = getRegisterByID(registerID);
+		if (register == null) {
+			return null;
+		} else {
+			return register.getSeatListInChar();
+		}
 	}
 	
 	

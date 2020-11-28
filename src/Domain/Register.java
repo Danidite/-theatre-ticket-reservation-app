@@ -86,6 +86,17 @@ public class Register {
 	}
 	
 	/**
+	 * Check if the seat Can be occupied
+	 * @param row
+	 * @param col
+	 * @param isEarly
+	 * @return
+	 */
+	public boolean canOccupySeat(int row, int col, boolean isEarly) {
+		return seatList.canOccupySeat(row, col, isEarly);
+	}
+	
+	/**
 	 * Un-occupy a seat, return true if it worked
 	 * @param row
 	 * @param col
