@@ -170,11 +170,6 @@ public class TheatreProgram {
 		return database.getVoucherByID(voucherID);
 	}
 	
-	
-	
-	
-	
-	
 	// Getters and setters
 	public User getCurrentUser() {
 		return currentUser;
