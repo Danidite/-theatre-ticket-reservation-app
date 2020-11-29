@@ -127,7 +127,7 @@ public class RegisteredUser extends User {
 	 * Remove a reservation by Id
 	 * @param reservationId
 	 */
-	void removeReservationById(String reservationID) {
+	public void removeReservationById(String reservationID) {
 		for (int i = 0; i < reservationList.size(); i++) {
 			if (reservationList.get(i).getUserID().equals(reservationID)) {
 				reservationList.remove(i);

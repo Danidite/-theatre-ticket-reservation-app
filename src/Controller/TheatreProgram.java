@@ -91,6 +91,13 @@ public class TheatreProgram {
 	}
 	
 	/**
+	 * Logout
+	 */
+	public void logout() {
+		currentUser = null;
+	}
+	
+	/**
 	 * Get login status 0 = not login, 1 = registered user, 2 = admin
 	 * @return
 	 */
@@ -144,12 +151,34 @@ public class TheatreProgram {
 	}
 	
 	/**
-	 * Cancel reservation, create a voucher and returns the voucher
+	 * Cancel reservation, create a voucher and returns the voucher, return null if fails
 	 * @param reservationID
 	 * @return
 	 */
 	public Voucher cancelReservation(String reservationID) {
 		Reservation reservation = database.getReservationByID(reservationID);
+		
+		//If no reservation found for that ID
+		if (reservation == null) {
+			return null;
+		}
+		
+		String userID = reservation.getUserID();
+		
+		// Check if they have permission to access it
+		if (userID != null) {
+			if (getLoginStatus() == 1) {
+				RegisteredUser user = (RegisteredUser) currentUser;
+				if (user.getUserID().equals(reservation.getUserID())) {
+					user.removeReservationById(reservationID);
+				} else {
+					return null;
+				}
+			} else {
+				return null;
+			}
+		}
+
 		double price = reservation.getTicket().getRegister().getPrice();
 		if (database.removeReservationByID(reservationID) == true) {
 			if (currentUser == null) {
@@ -174,6 +203,7 @@ public class TheatreProgram {
 	public User getCurrentUser() {
 		return currentUser;
 	}
+	
 	public void setCurrentUser(User currentUser) {
 		this.currentUser = currentUser;
 	}

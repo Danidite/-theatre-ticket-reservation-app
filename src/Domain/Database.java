@@ -132,6 +132,10 @@ public class Database {
 		
 		registerList.add(newRegister);
 		
+		// Add a new news (if upcoming)
+		
+		
+		
 		return true;
 	}
 	
@@ -498,8 +502,45 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Get news by its Register ID
+	 * @param registerID
+	 * @return
+	 */
+	public News getNewsByRegisterID(String registerID) {
+		for(int i = 0; i < registerList.size(); i++) {
+			if (newsList.get(i).getRegisterID().equals(registerID)) {
+				return newsList.get(i);
+			}
+		}
+		return null;
+	}
 	
+	/**
+	 * Remove news by register ID
+	 * @param registerID
+	 * @return
+	 */
+	public News removeNewsByRegisterID(String registerID) {
+		for(int i = 0; i < registerList.size(); i++) {
+			if (newsList.get(i).getRegisterID().equals(registerID)) {
+				return newsList.remove(i);
+			}
+		}
+		return null;
+	}
 	
+	/**
+	 * Add a news
+	 * @param register
+	 * @param information
+	 * @return
+	 */
+	public News addNews(Register register, String information) {
+		News news = new News(register, information);
+		this.newsList.add(news);
+		return news;
+	}
 	
 	/*
 	 * Getters and savvers
