@@ -8,6 +8,20 @@ public class TheatreProgram {
 	private Database database;
 	private User currentUser;
 	
+	private static TheatreProgram theatre_program_instance = null; 
+	
+	/**
+	 * static method to create instance of Singleton class 
+	 * @return
+	 */
+    public static TheatreProgram getInstance() 
+    { 
+        if (theatre_program_instance == null) 
+        	theatre_program_instance = new TheatreProgram(Database.getInstance()); 
+  
+        return theatre_program_instance; 
+    }
+	
 	public TheatreProgram(Database database) {
 		this.database = database;
 	}
@@ -75,6 +89,20 @@ public class TheatreProgram {
 	}
 	
 	/**
+	 * Create new user, return true if successful, false if not 
+	 * @param user
+	 * @return
+	 */
+	public boolean signUp(String username, String password, Name name, Payment paymentinfo) {
+		User newUser = database.signUp(username, password, name, paymentinfo);
+		if (newUser != null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
 	 * Login and replace user with the new specified user, also returns the username
 	 * @param username
 	 * @param password
@@ -102,7 +130,7 @@ public class TheatreProgram {
 	 * @return
 	 */
 	public int getLoginStatus() {
-		if (currentUser != null) {
+		if (currentUser == null) {
 			return 0;
 		} else if (currentUser.isAdmin() == false) {
 			return 1;
@@ -188,6 +216,14 @@ public class TheatreProgram {
 		} else {
 			return null;
 		}
+	}
+	
+	/**
+	 * Get database to save data and then exit program
+	 */
+	public void exitProgram() {
+		database.saveToDatabase();
+		System.exit(0);
 	}
 	
 	/**

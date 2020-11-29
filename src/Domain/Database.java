@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 /**
  * Singleton class
+ * 
  * @author 10993
  *
  */
@@ -17,21 +18,21 @@ public class Database {
 	private ArrayList<Register> registerList;
 	private ArrayList<Theatre> theatreList;
 	private ArrayList<Voucher> voucherList;
-	
-	private static Database database_instance = null; 
-	
+
+	private static Database database_instance = null;
+
 	/**
-	 * static method to create instance of Singleton class 
+	 * static method to create instance of Singleton class
+	 * 
 	 * @return
 	 */
-    public static Database getInstance() 
-    { 
-        if (database_instance == null) 
-        	database_instance = new Database(); 
-  
-        return database_instance; 
-    }
-	
+	public static Database getInstance() {
+		if (database_instance == null)
+			database_instance = new Database();
+
+		return database_instance;
+	}
+
 	Database() {
 		userList = new ArrayList<User>();
 		newsList = new ArrayList<News>();
@@ -40,8 +41,9 @@ public class Database {
 		registerList = new ArrayList<Register>();
 		theatreList = new ArrayList<Theatre>();
 		voucherList = new ArrayList<Voucher>();
+		loadFromDatabase();
 	}
-	
+
 	/**
 	 * Load data from online database
 	 */
@@ -54,20 +56,24 @@ public class Database {
 		registerList = new ArrayList<Register>();
 		theatreList = new ArrayList<Theatre>();
 		voucherList = new ArrayList<Voucher>();
-		
+
 		// LOAD data from online database
+		
+		
+		signUp("user", "password", new Name("John", "J", "Smith"), new Payment(null, null, null, null, 0, 0, 0, 0));
 	}
-	
+
 	/**
 	 * Save data to database
 	 */
 	public void saveToDatabase() {
 		// SAVE data to online database
-		
+
 	}
-	
+
 	/**
 	 * Return the registers of an movie, return null if no movie can be found
+	 * 
 	 * @param movieID
 	 * @return
 	 */
@@ -79,10 +85,10 @@ public class Database {
 		}
 		return null;
 	}
-	
-	
+
 	/**
 	 * Get register by ID, return null if cannot be found
+	 * 
 	 * @param registerID
 	 * @return
 	 */
@@ -94,10 +100,10 @@ public class Database {
 		}
 		return null;
 	}
-	
-	
+
 	/**
 	 * Create a register object
+	 * 
 	 * @param movieID
 	 * @param theatreID
 	 * @param seatRow
@@ -111,36 +117,38 @@ public class Database {
 	 * @param announcementDay
 	 * @return
 	 */
-	public boolean addRegister(String movieID, String theatreID, double price, int seatRow, int seatColumn, int showYear, int showMonth, int showDay, int showHour, int announcementYear, int announcementMonth, int announcementDay) {
+	public boolean addRegister(String movieID, String theatreID, double price, int seatRow, int seatColumn,
+			int showYear, int showMonth, int showDay, int showHour, int announcementYear, int announcementMonth,
+			int announcementDay) {
 		Movie movie = getMovieByID(movieID);
 		Theatre theatre = getTheatreByID(theatreID);
-		
-		if(movie == null || theatre == null) {
+
+		if (movie == null || theatre == null) {
 			return false;
 		}
-		
+
 		boolean earlyBooking = false;
-		
+
 		// If announces in the future
 		if (isEarly(LocalDate.of(announcementYear, announcementMonth, announcementDay))) {
 			earlyBooking = true;
 		}
-		
-		Register newRegister = new Register(movie, theatre, price, seatRow, seatColumn, earlyBooking, showYear, showMonth, showDay, showHour, announcementYear, announcementMonth, announcementDay);
-		
+
+		Register newRegister = new Register(movie, theatre, price, seatRow, seatColumn, earlyBooking, showYear,
+				showMonth, showDay, showHour, announcementYear, announcementMonth, announcementDay);
+
 		movie.addRegister(newRegister);
-		
+
 		registerList.add(newRegister);
-		
+
 		// Add a new news (if upcoming)
-		
-		
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * See if early, the days between today and new days are greater than 0
+	 * 
 	 * @param newDate
 	 * @return
 	 */
@@ -154,9 +162,10 @@ public class Database {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Create a theatre object, return false if already exist
+	 * 
 	 * @param theatreName
 	 * @param theatreAddress
 	 * @return
@@ -169,7 +178,7 @@ public class Database {
 			return false;
 		}
 	}
-	
+
 	public Theatre getTheatreByNameAndAddress(String theatreName, String theatreAddress) {
 		for (int i = 0; i < theatreList.size(); i++) {
 			if (theatreList.get(i).getTheatreName().equals(theatreName)) {
@@ -180,7 +189,7 @@ public class Database {
 		}
 		return null;
 	}
-	
+
 	public Theatre getTheatreByID(String theatreID) {
 		for (int i = 0; i < theatreList.size(); i++) {
 			if (theatreList.get(i).getTheatreID().equals(theatreID)) {
@@ -189,9 +198,10 @@ public class Database {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Create a movie object and add movie to the list
+	 * 
 	 * @param movieName
 	 * @param year
 	 * @param month
@@ -207,9 +217,10 @@ public class Database {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Get movie by movie name
+	 * 
 	 * @param movieName
 	 * @return
 	 */
@@ -221,9 +232,10 @@ public class Database {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Return a movie with the argument ID, return null if cannot be found
+	 * 
 	 * @param movieID
 	 * @return
 	 */
@@ -235,11 +247,11 @@ public class Database {
 		}
 		return null;
 	}
-	
 
-	
 	/**
-	 * Remove register by ID, return true if successful, return false if it cannot be found
+	 * Remove register by ID, return true if successful, return false if it cannot
+	 * be found
+	 * 
 	 * @param registerID
 	 * @return
 	 */
@@ -252,9 +264,11 @@ public class Database {
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Add a new reservation and also return the reservationID (Also occupy the seat)
+	 * Add a new reservation and also return the reservationID (Also occupy the
+	 * seat)
+	 * 
 	 * @param registerID
 	 * @param seatRow
 	 * @param seatColumn
@@ -263,12 +277,13 @@ public class Database {
 	 * @param paymentInfo
 	 * @return
 	 */
-	public String addReservation(String registerID, int seatRow, int seatColumn, String userID, String voucherID, Payment paymentInfo) {
+	public String addReservation(String registerID, int seatRow, int seatColumn, String userID, String voucherID,
+			Payment paymentInfo) {
 		RegisteredUser user = null;
 		if (userID != null) {
 			user = (RegisteredUser) getUserByID(userID);
 		}
-		
+
 		// Check if we even have any payment info
 		if (paymentInfo == null) {
 			if (user == null) {
@@ -276,54 +291,54 @@ public class Database {
 			}
 			paymentInfo = user.getPaymentInfo();
 		}
-		
+
 		// Get register
 		Register currentRegister = getRegisterByID(registerID);
-		
+
 		if (currentRegister == null) {
 			return null;
 		}
-		
+
 		// See if it is early reservation
 		boolean isEarly = isEarly(currentRegister.getAnnouncementDate());
-		
+
 		// Check if the current seat can be occupied
 		if (currentRegister.canOccupySeat(seatRow, seatColumn, isEarly) == false) {
 			return null;
 		}
-		
-		// Only registered user are allowed to do early reservation, if not registered, fail to early register
+
+		// Only registered user are allowed to do early reservation, if not registered,
+		// fail to early register
 		if (isEarly == true && user == null) {
 			return null;
 		}
-		
+
 //		String userID = null;
 //		if (user != null) {
 //			userID = user.getUserID();
 //		}
-		
+
 		// Get the price of register
 		double price = currentRegister.getPrice();
-		
+
 		Voucher currentVoucher = getVoucherByID(voucherID);
-		
+
 		// Use voucher credits
 		if (currentVoucher != null) {
 			double voucherCredit = currentVoucher.getCredit();
-			
+
 			double remainingCredit = 0;
-			
+
 			if (voucherCredit > price) {
 				remainingCredit = voucherCredit - price;
 			}
-			
+
 			price -= voucherCredit;
-			
-			
+
 			if (price < 0) {
 				price = 0;
 			}
-			
+
 			// Check if voucher could be removed
 			if (remainingCredit == 0) {
 				removeVoucherByID(voucherID);
@@ -331,26 +346,27 @@ public class Database {
 				currentVoucher.setCredit(remainingCredit);
 			}
 		}
-		
+
 		// Create reservation
 		Reservation reservation = new Reservation(seatRow, seatColumn, currentRegister, price, userID, paymentInfo);
-		
+
 		// Occupy Seat
 		if (currentRegister.occupySeat(seatRow, seatColumn, isEarly) == false) {
 			System.err.println("Error occupying seat!, fix it!");
 			System.exit(1);
 		}
-		
+
 		// Add to user
 		if (user != null) {
 			user.addReservation(reservation);
 		}
-		
+
 		return reservation.getReservationID();
 	}
-	
+
 	/**
 	 * Get reservation by ID, return null otherwise
+	 * 
 	 * @param reservationID
 	 * @return
 	 */
@@ -360,12 +376,13 @@ public class Database {
 				return reservationList.get(i);
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Remove a reservation by ID
+	 * 
 	 * @param reservationID
 	 * @return
 	 */
@@ -376,12 +393,13 @@ public class Database {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Verify and return account
+	 * 
 	 * @param username
 	 * @param password
 	 * @return
@@ -393,12 +411,13 @@ public class Database {
 				return current;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Get user with username, return null otherwise
+	 * 
 	 * @param username
 	 * @return
 	 */
@@ -410,9 +429,10 @@ public class Database {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Get user with userID, return null otherwise
+	 * 
 	 * @param userID
 	 * @return
 	 */
@@ -424,9 +444,10 @@ public class Database {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Sign up for new account, return null if fail
+	 * 
 	 * @param userName
 	 * @param password
 	 * @param name
@@ -441,9 +462,10 @@ public class Database {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Create voucher and return that voucher
+	 * 
 	 * @param amount
 	 * @param currentUser
 	 * @return
@@ -458,9 +480,10 @@ public class Database {
 		}
 		return newVoucher;
 	}
-	
+
 	/**
 	 * Return voucher with ID
+	 * 
 	 * @param voucherID
 	 * @return
 	 */
@@ -472,9 +495,10 @@ public class Database {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Remove voucher, return true if successful, false of voucher cannot be found
+	 * 
 	 * @param voucherID
 	 * @return
 	 */
@@ -487,9 +511,10 @@ public class Database {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Get seat list by registerID, return null if register cannot be found
+	 * 
 	 * @param registerID
 	 * @return
 	 */
@@ -501,37 +526,40 @@ public class Database {
 			return register.getSeatListInChar();
 		}
 	}
-	
+
 	/**
 	 * Get news by its Register ID
+	 * 
 	 * @param registerID
 	 * @return
 	 */
 	public News getNewsByRegisterID(String registerID) {
-		for(int i = 0; i < registerList.size(); i++) {
+		for (int i = 0; i < registerList.size(); i++) {
 			if (newsList.get(i).getRegisterID().equals(registerID)) {
 				return newsList.get(i);
 			}
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Remove news by register ID
+	 * 
 	 * @param registerID
 	 * @return
 	 */
 	public News removeNewsByRegisterID(String registerID) {
-		for(int i = 0; i < registerList.size(); i++) {
+		for (int i = 0; i < registerList.size(); i++) {
 			if (newsList.get(i).getRegisterID().equals(registerID)) {
 				return newsList.remove(i);
 			}
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Add a news
+	 * 
 	 * @param register
 	 * @param information
 	 * @return
@@ -541,49 +569,62 @@ public class Database {
 		this.newsList.add(news);
 		return news;
 	}
-	
+
 	/*
 	 * Getters and savvers
 	 */
 	public ArrayList<User> getUserList() {
 		return userList;
 	}
+
 	public void setUserList(ArrayList<User> userList) {
 		this.userList = userList;
 	}
+
 	public ArrayList<News> getNewsList() {
 		return newsList;
 	}
+
 	public void setNewsList(ArrayList<News> newsList) {
 		this.newsList = newsList;
 	}
+
 	public ArrayList<Reservation> getReservationList() {
 		return reservationList;
 	}
+
 	public void setReservationList(ArrayList<Reservation> reservationList) {
 		this.reservationList = reservationList;
 	}
+
 	public ArrayList<Movie> getMovieList() {
 		return movieList;
 	}
+
 	public void setMovieList(ArrayList<Movie> movieList) {
 		this.movieList = movieList;
 	}
+
 	public ArrayList<Register> getRegisterList() {
 		return registerList;
 	}
+
 	public void setRegisterList(ArrayList<Register> registerList) {
 		this.registerList = registerList;
 	}
+
 	public ArrayList<Theatre> getTheatreList() {
 		return theatreList;
 	}
+
 	public void setTheatreList(ArrayList<Theatre> theatreList) {
 		this.theatreList = theatreList;
 	}
+
 	public ArrayList<Voucher> getVoucherList() {
 		return voucherList;
 	}
+
 	public void setVoucherList(ArrayList<Voucher> voucherList) {
 		this.voucherList = voucherList;
 	}

@@ -5,7 +5,7 @@ public class Name {
 	private String middleName;
 	private String lastName;
 	
-	Name(String firstName, String middleName, String lastName) {
+	public Name(String firstName, String middleName, String lastName) {
 		this.firstName = firstName;
 		this.middleName = middleName;
 		this.lastName = lastName;

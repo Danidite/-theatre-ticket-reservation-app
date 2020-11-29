@@ -1,23 +1,22 @@
-import Controller.TheatreProgram;
-import Domain.Database;
-import Presentation.InitialMenuGUI;
+import Presentation.GuestMenuGUI;
 
 public class TheatreApp {
-	private Database database;
-	private TheatreProgram prog;
-	
-	TheatreApp() {
-		database = Database.getInstance();
-		prog = new TheatreProgram(database);
-	}
-	
+//	private Database database;
+//	private TheatreProgram prog;
+//	
+//	TheatreApp() {
+////		database = Database.getInstance();
+////		prog = new TheatreProgram(database);
+//		prog = TheatreProgram.getInstance();
+//	}
+//	
 	public void startApp()
 	{
-		new InitialMenuGUI();
+		new GuestMenuGUI();
 	}
 	
 	public static void main(String[] args) {
-		TheatreApp serverApp = new TheatreApp();
-		serverApp.startApp();
+		TheatreApp app = new TheatreApp();
+		app.startApp();
 	}
 }

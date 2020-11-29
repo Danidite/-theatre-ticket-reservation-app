@@ -6,6 +6,13 @@ public class Client {
 //		new InitialMenuGUI();
 //		new LoginMenuGUI();
 //		new guestMenuGUI();
+//		new SelectMovieGUI();
+//		new SelectTheatreGUI();
+//		new SelectSeatGUI();
+//		new sendUserAlertGUI("get soemfs");
+//		new CancelReservationGUI();
+//		new SignupGUI();
+		new RegisteredUserMenuGUI();
 	}
 
 }

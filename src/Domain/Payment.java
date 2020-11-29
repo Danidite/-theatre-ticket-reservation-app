@@ -8,7 +8,7 @@ public class Payment {
 	private int expirationMonth;
 	private int pin;
 	
-	Payment (String firstName, String middleName, String lastName, String billingAddress, int cardNumber, int expYear, int expMonth, int pin) {
+	public Payment (String firstName, String middleName, String lastName, String billingAddress, int cardNumber, int expYear, int expMonth, int pin) {
 		this.cardHolderName = new Name(firstName, middleName, lastName);
 		this.billingAddress = billingAddress;
 		this.cardNumber = cardNumber;

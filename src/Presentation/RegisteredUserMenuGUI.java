@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -14,69 +13,71 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import Controller.MenuController;
+import Presentation.GuestMenuGUI.guestMenuListener;
 
-public class GuestMenuGUI {
+public class RegisteredUserMenuGUI {
 	private JFrame frame;
 	private JPanel southPanel = new JPanel();
 	private JPanel masterPanel = new JPanel();
 	
-	private JButton signUpButton = new JButton("Sign Up");
-	private JButton loginButton = new JButton("Login");
+	private JButton viewReservations = new JButton("View Reservations");
+	private JButton newsButton = new JButton("News");
+	private JButton logoutButton = new JButton("Logout");
 	private JButton cancelReservationButton = new JButton("Cancel Reservation");
 	private JButton bookReservationButton = new JButton("Book Reservation");
-	private JButton exitButton = new JButton("Exit");
+	private JButton paySubscriptionButton = new JButton("Pay Subscription");
 	
 	private JTextArea theText;
 	private JScrollPane scroll;
-	private guestMenuListener listener;
+	private RegisteredUserMenuListener listener;
 	
-	class guestMenuListener implements ActionListener{
+	class RegisteredUserMenuListener implements ActionListener{
 	
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(e.getSource() == bookReservationButton) {
-				MenuController.guestMenuBookReservationButtonPressed();
-				getFrame().dispatchEvent(new WindowEvent(getFrame(), WindowEvent.WINDOW_CLOSING));
+			if(e.getSource() == viewReservations) {
+				MenuController.RegisteredUserViewReservationsButtonPressed();
+			} else if(e.getSource() == bookReservationButton) {
+				MenuController.RegisteredUserBookReservationButtonPressed();
 			} else if(e.getSource() == cancelReservationButton) {
-				MenuController.guestMenuCancelReservationButtonPressed();
-				getFrame().dispatchEvent(new WindowEvent(getFrame(), WindowEvent.WINDOW_CLOSING));
-			} else if(e.getSource() == loginButton) {
-				MenuController.guestMenuLoginButtonPressed();
-				getFrame().dispatchEvent(new WindowEvent(getFrame(), WindowEvent.WINDOW_CLOSING));
-			} else if(e.getSource() == signUpButton) {
-				MenuController.guestMenuSignUpButtonPressed();
-				getFrame().dispatchEvent(new WindowEvent(getFrame(), WindowEvent.WINDOW_CLOSING));
-			} else if(e.getSource() == exitButton) {
-				MenuController.guestMenuExitButtonPressed();
-				getFrame().dispatchEvent(new WindowEvent(getFrame(), WindowEvent.WINDOW_CLOSING));
+				MenuController.RegisteredUserCancelReservationButtonPressed();
+			} else if(e.getSource() == paySubscriptionButton) {
+				MenuController.RegisteredUserPaySubscriptionButtonPressed();
+			} else if(e.getSource() == newsButton) {
+				MenuController.RegisteredUserViewNewsButtonPressed();
+			} else if(e.getSource() == logoutButton) {
+				MenuController.RegisteredUserLogoutButtonPressed();
 			}
 		}
 		
 	}
-		
 	
-	
-	public GuestMenuGUI(){
+	public RegisteredUserMenuGUI(){
 		//add listner
-		listener = new guestMenuListener();
+		listener = new RegisteredUserMenuListener();
+		
+		viewReservations.addActionListener(listener);
 		bookReservationButton.addActionListener(listener);
 		cancelReservationButton.addActionListener(listener);
-		loginButton.addActionListener(listener);
-		signUpButton.addActionListener(listener);
-		exitButton.addActionListener(listener);
+		paySubscriptionButton.addActionListener(listener);
+		newsButton.addActionListener(listener);
+		logoutButton.addActionListener(listener);
+		
 		
 		//create GUI
 		frame = new JFrame();
-		frame.setTitle("Guest Menu");
+		frame.setTitle("Registered User Menu");
 		
 		frame.setResizable(false); 		//user can't resize GUI on their own
-		frame.setSize(800,800);			//set size of this
+		frame.setSize(1000,800);			//set size of this
 		southPanel.setLayout(new FlowLayout());
+		
+		southPanel.add(viewReservations);
 		southPanel.add(bookReservationButton);
 		southPanel.add(cancelReservationButton);
-		southPanel.add(loginButton);
-		southPanel.add(signUpButton);
-		southPanel.add(exitButton);
+		southPanel.add(paySubscriptionButton);
+		southPanel.add(newsButton);
+		southPanel.add(logoutButton);
 		
 		theText = new JTextArea();
 		scroll = new JScrollPane(theText);
@@ -111,8 +112,5 @@ public class GuestMenuGUI {
 	public void setTheText(JTextArea theText) {
 		this.theText = theText;
 	}
-	
-	
-	
 	
 }
